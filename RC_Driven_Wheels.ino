@@ -15,6 +15,8 @@ int EN = 13;
 
 // Received data via bluetooth
 char data;
+char check_data;
+int stop_pressed = 0;
 int btVal;
 
 void setup() {
@@ -112,6 +114,59 @@ void loop()
         //Serial.println("Stop");
         pumpOFF();
         break;
+    
+      case '':  // Put button character for path A in ''
+        // Actual path needs calibration
+        // Plant 1
+        left();
+        delay(2000);
+        forward();
+        delay(5000);
+        reverse_left();
+        delay(2000);
+        forward();
+        delay(1000);
+        // Put code for the arm movement?
+        pumpON();
+        delay(5000);
+        pumpOFF();
+
+        // Check if the stop button is pressed during previous actions
+        // is there a better way? Buttons pushed while running delays might result in buffer overflow
+        while (Bluetooth.available()) {
+          check_data = Bluetooth.read();
+          if (check_data == 'S') {  // Emergency stop
+            stop_pressed = 1;
+            break;
+          }
+        }
+        if (stop_pressed == 1) {
+          break;
+        }
+        
+        // Code to check if path A button pressed again to pause???
+
+        // Plant 2
+        reverse();
+        delay(1000);
+        reverse_left();
+        delay(3000);
+        forward();
+        delay(2000);
+        left();
+        delay(3000);
+        forward();
+        delay(1000);
+        // Put code for the arm movement?
+        pumpON();
+        delay(5000);
+        pumpOFF();
+
+        // Check again if stop button is pressed...
+
+        // Plant 3, etc....
+
+        break;
 
   }
 
@@ -177,4 +232,20 @@ void pumpOFF()
   digitalWrite(PUMP1, LOW);
   digitalWrite(PUMP2, LOW);
   digitalWrite(EN, LOW);
+}
+
+void reverse_left()
+{
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void reverse_right()
+{
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
 }
