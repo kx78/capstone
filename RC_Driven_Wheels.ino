@@ -141,6 +141,7 @@ void loop()
           }
         }
         if (stop_pressed == 1) {
+          stop_pressed = 0;
           break;
         }
         
