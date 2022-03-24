@@ -115,13 +115,13 @@ void loop()
         pumpOFF();
         break;
     
-      case '':  // Put button character for path A in ''
+      case 'A':  // Put button character for path A in '' that corresponds to app, press button once (not hold) like the pump
         // Actual path needs calibration
         // Plant 1
         left();
-        delay(2000);
+        delay(2000); //2000ms=2s time delay holds left function on for 2s (turn left for 2s)
         forward();
-        delay(5000);
+        delay(5000); //5s forward
         reverse_left();
         delay(2000);
         forward();
