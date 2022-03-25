@@ -11,7 +11,12 @@ int Speed = 204;
 // output pin for the pump
 int PUMP1 = 11;
 int PUMP2 = 12;
-int EN = 13;
+int EN_PUMP = 13;
+
+// output pin for the base motor
+int BASE1 = 14;
+int BASE2 = 15;
+int EN_BASE = 16;
 
 // Received data via bluetooth
 char data;
@@ -27,7 +32,10 @@ void setup() {
   pinMode(IN4, OUTPUT);
   pinMode(PUMP1, OUTPUT);
   pinMode(PUMP2, OUTPUT);
-  pinMode(EN, OUTPUT);
+  pinMode(EN_PUMP, OUTPUT);
+  pinMode(BASE1, OUTPUT);
+  pinMode(BASE2, OUTPUT);
+  pinMode(EN_BASE, OUTPUT);
 // Initial output value (during initialization?)
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, LOW);
@@ -35,7 +43,10 @@ void setup() {
   digitalWrite(IN4, LOW);
   digitalWrite(PUMP1, LOW);
   digitalWrite(PUMP2, LOW);
-  digitalWrite(EN, LOW);
+  digitalWrite(EN_PUMP, LOW);
+    digitalWrite(BASE1, LOW);
+  digitalWrite(BASE2, LOW);
+  digitalWrite(EN_BASE, LOW);
 //Set the baud rate to your Bluetooth module.
   Bluetooth.begin(9600);
   Serial.begin(9600); 
@@ -79,26 +90,6 @@ void loop()
         //Serial.println("Right");
         right();
         break;
-      
-      case 'G':                     
-        //Serial.println("Right");
-        //right();
-        break;
-       
-      case 'I':                     
-        //Serial.println("Right");
-        //right();
-        break;
-
-      case 'H':                     
-        //Serial.println("Right");
-        //right();
-        break;
-
-      case 'J':                     
-        //Serial.println("Right");
-        //right();
-        break;
         
       case 'S':                                            
         //Serial.println("Stop");
@@ -113,6 +104,16 @@ void loop()
       case 'w':                                            
         //Serial.println("Stop");
         pumpOFF();
+        break;
+
+      case 'U':                                            
+        //Serial.println("Stop");
+        BaseON();
+        break;
+      
+      case 'u':                                            
+        //Serial.println("Stop");
+        BaseOFF();
         break;
     
       case 'A':  // Put button character for path A in '' that corresponds to app, press button once (not hold) like the pump
@@ -168,6 +169,7 @@ void loop()
         // Plant 3, etc....
 
         break;
+
 
   }
 
@@ -225,15 +227,30 @@ void pumpON()
 {
   digitalWrite(PUMP1, HIGH);
   digitalWrite(PUMP2, LOW);
-  digitalWrite(EN, HIGH);
+  digitalWrite(EN_PUMP, HIGH);
 }
 
 void pumpOFF()
 {
   digitalWrite(PUMP1, LOW);
   digitalWrite(PUMP2, LOW);
-  digitalWrite(EN, LOW);
+  digitalWrite(EN_PUMP, LOW);
 }
+
+void BaseON()
+{
+  digitalWrite(PUMP1, LOW);
+  digitalWrite(PUMP2, HIGH);
+  digitalWrite(EN_BASE, HIGH);
+}
+
+void BaseOFF()
+{
+  digitalWrite(BASE1, LOW);
+  digitalWrite(BASE2, LOW);
+  digitalWrite(EN_BASE, LOW);
+}
+
 
 void reverse_left()
 {
