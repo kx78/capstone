@@ -118,6 +118,7 @@ void loop()
     
       case 'A':  // Put button character for path A in '' that corresponds to app, press button once (not hold) like the pump
         // Actual path needs calibration
+        
         // Plant 1
         left();
         delay(2000); //2000ms=2s time delay holds left function on for 2s (turn left for 2s)
@@ -127,25 +128,26 @@ void loop()
         delay(2000);
         forward();
         delay(1000);
-        // Put code for the arm movement?
+        stoprobot();
+        Serial.println("Moved to Plant 1");
+        // Put code for arm movement and activate pump
+        BaseON();
+        delay(3000);
+        BaseOFF();
         pumpON();
-        delay(5000);
+        delay(3000);
         pumpOFF();
+        Serial.println("Plant 1 Watered");
 
         // Check if the stop button is pressed during previous actions
         // is there a better way? Buttons pushed while running delays might result in buffer overflow
-        while (Bluetooth.available()) {
-          check_data = Bluetooth.read();
-          if (check_data == 'S') {  // Emergency stop
-            stop_pressed = 1;
-            break;
-          }
-        }
+        check_stop();
         if (stop_pressed == 1) {
+          Serial.println("Stopped, Waiting for instruction...");
           stop_pressed = 0;
           break;
         }
-        
+
         // Code to check if path A button pressed again to pause???
 
         // Plant 2
@@ -159,15 +161,29 @@ void loop()
         delay(3000);
         forward();
         delay(1000);
-        // Put code for the arm movement?
+        stoprobot();
+        Serial.println("Moved to Plant 2");
+        // Put code for arm movement and activate pump
+        BaseON();
+        delay(3000);
+        BaseOFF();
         pumpON();
-        delay(5000);
+        delay(3000);
         pumpOFF();
+        Serial.println("Plant 2 Watered");
 
         // Check again if stop button is pressed...
+        check_stop();
+        if (stop_pressed == 1) {
+          Serial.println("Stopped, Waiting for instruction...");
+          stop_pressed = 0;
+          break;
+        }
 
         // Plant 3, etc....
 
+        Serial.println("Path A Done");
+        Serial.println("Waiting for instruction...");
         break;
 
 
@@ -266,4 +282,15 @@ void reverse_right()
   digitalWrite(IN2, HIGH);
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, LOW);
+}
+
+void check_stop()
+{
+  while (Bluetooth.available()) {
+    check_data = Bluetooth.read();
+    if (check_data == 'S') {  // Stop button pressed
+      stop_pressed = 1;
+      break;
+    }
+  }
 }
